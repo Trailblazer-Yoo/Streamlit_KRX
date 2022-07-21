@@ -4,6 +4,8 @@ import streamlit as st
 import streamlit.components.v1 as components
 import plotly.express as px
 import plotly.graph_objects as go
+import csaps
+import numpy as np
 
 st.set_page_config(page_title='jykl: 공포-탐욕 지수', layout="wide")
 
@@ -11,49 +13,34 @@ df = pd.read_csv('VIX.csv')
 df_text = pd.read_csv('2022-06_score.csv')
 df_number = pd.read_csv('data_20200601_20220630.csv')
 
-today = "2022년 6월 30일"
+df2 = pd.read_csv('final.csv')
+x = np.linspace(0., 30., 30)
+y = np.array(df2['fg_score'])
+sp = csaps.csaps(x, y, smooth=0.8)
+xs = np.linspace(x[0], x[-1], 120)
+ys = sp(xs)
+
+tp_df = pd.DataFrame()
+tp_df['days'] = xs
+tp_df['score'] = ys
+
+#today = "2022년 6월 30일"
 score = 17
-if score >= 0 and score < 19:
+if score >= 0 and score < 20:
     emoji = '😱'
-elif score >= 20 and score < 39:
+elif score >= 20 and score < 40:
     emoji = '😨'
-elif score >= 40 and score < 59:
+elif score >= 40 and score < 60:
     emoji = '😶'
-elif score >= 60 and score < 79:
+elif score >= 60 and score < 80:
     emoji = '😋'
 elif score >= 80 and score <= 100:
     emoji = '🤑'
-
-st.title("jykl: 개인 투자자의 KTOP30 투자 심리지수? ✨")
+st.title("jykl: 개인 투자자의 KTOP30 투자 심리지수✨")
 st.markdown("""```
     이번 프로젝트를 통해서 투자자의 시장인식이 금융시장에 미치는 영향을 알아보고자 하였습니다.
 따라서, 개인투자자의 감정이 담긴 댓글들을 모으고 이들을 수치화시킴으로써 개인투자자의 시장인식을 나타내는 새로운 지수를 개발해 보았습니다.""")
-
-st.markdown("<br>", unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)
-
-st.markdown("""
-<style>
-.emp {
-    font-size: 23px
-}
-</style>
-""", unsafe_allow_html=True)
-
 # 공포-탐욕 지수
-st.header(f"{today}의 공포-탐욕 지수")
-st.markdown("""---""")
-scoring, state = st.columns(2)
-score_header = '<h2 style="text-align: center">Score</h2>'
-score_text = f'<p style="font-size: 150px; text-align: center">{score}</p>'
-state_header = '<h2 style="text-align: center">State</h2>'
-state_emoji = f'<p style="font-size: 150px; text-align: center">{emoji}</p>'
-with scoring:
-    st.markdown(score_header, unsafe_allow_html=True)
-    st.markdown(score_text, unsafe_allow_html=True)
-with state:
-    st.markdown(state_header, unsafe_allow_html=True)
-    st.markdown(state_emoji, unsafe_allow_html=True)
 st.markdown("""---""")
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("CNN 머니에서 제공하는 <span class=emp>`Fear & Greed Index`</span>를 참고하여 국내 주식시장에 특화된 공포-탐욕 지수를 개발하였습니다.", unsafe_allow_html=True)
@@ -65,43 +52,92 @@ st.markdown("""공포-탐욕 지수는 시장의 분위기를 가늠하는 데 �
                 개인투자자의 결정에 영향을 미칠 수 있는 감정과 편견을 확인하고 
                 이들을 분석함으로써 시장 심리를 평가하는 유용한 방법으로 활용될 수 있습니다.""")
 st.markdown("이모티콘은 아래와 같은 점수 범위와 감정을 나타냅니다. ")
-st.markdown("""- 0 ~ 19 = **극단적 공포** <span class=emp>😱</span>""", unsafe_allow_html=True)
-st.markdown("""- 20 ~ 39 = **공포** <span class=emp>😨</span>""", unsafe_allow_html=True)
-st.markdown("""- 40 ~ 59 = **중립** <span class=emp>😶</span>""", unsafe_allow_html=True)
-st.markdown("""- 60 ~ 79 = **탐욕** <span class=emp>😋</span>""", unsafe_allow_html=True)
+st.markdown("""- 0 ~ 20 = **극단적 공포** <span class=emp>😱</span>""", unsafe_allow_html=True)
+st.markdown("""- 20 ~ 40 = **공포** <span class=emp>😨</span>""", unsafe_allow_html=True)
+st.markdown("""- 40 ~ 60 = **중립** <span class=emp>😶</span>""", unsafe_allow_html=True)
+st.markdown("""- 60 ~ 80 = **탐욕** <span class=emp>😋</span>""", unsafe_allow_html=True)
 st.markdown("""- 80 ~ 100 = **극단적 탐욕** <span class=emp>🤑</span>""", unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("""---""")
 
-# 통합
-st.header("공포-탐욕 지수 변화")
+st.header("공포-탐욕 지수")
+# day_col, fig_col = st.columns([1,1])
+# with day_col:
+st.markdown("<br>", unsafe_allow_html=True)
+
+
+
+# st.header(f"{today}의 공포-탐욕 지수")
+day = st.date_input("날짜 조회", datetime.date(2022, 6, 30))
+day = day.strftime("%Y-%m-%d")
+try:
+    open = df2[df2['날짜']==day]['fg_score'].values[0]
+    score = open
+    today = day
+
+    score = df2[df2['날짜'] == day]
+    score = int(score['fg_score'].values)
+    #st.markdown("""---""")
+    score_header = '<h2 style="text-align: center">Score</h2>'
+    score_text = f'<p style="font-size: 150px; text-align: center">{score}</p>'
+    state_header = '<h2 style="text-align: center">State</h2>'
+    state_emoji = f'<p style="font-size: 150px; text-align: center">{emoji}</p>'
+    # with fig_col:
+    #fig = px.line(tp_df, x='x', y='score')
+    #fig = px.line(df, x="Date", y="Open")
+
+    scoring, state = st.columns([1,1])
+    with scoring:
+        st.markdown(score_header, unsafe_allow_html=True)
+        st.markdown(score_text, unsafe_allow_html=True)
+    with state:
+        st.markdown(state_header, unsafe_allow_html=True)
+        st.markdown(state_emoji, unsafe_allow_html=True)
+
+except:
+    st.write(f"No data on `{day}`")
+    open = None
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown('* __현재 서비스는 2022년 6월에 한정되어 있습니다!__')
+
 st.markdown("""---""")
-day_col, fig_col = st.columns(2)
-with day_col:
-    st.markdown("<br>", unsafe_allow_html=True)
-    day = st.date_input("날짜 조회", datetime.date(2022, 6, 30))
-    day = day.strftime("%Y-%m-%d")
-    try:
-        open = df[df['Date']==day]['Open'].values[0]
-    except:
-        st.write(f"No data on `{day}`")
-        open = None
-with fig_col:
-    fig = px.line(df, x="Date", y="Open")
-    if open != None:
-        fig.add_annotation(x=day, y=open, 
-                       showarrow=True, arrowcolor="red", arrowsize=2, arrowhead=3, ay=-50,
-                       text='Here!', font=dict(color="black", size=20))
-        st.plotly_chart(fig)
-    else:
-        st.plotly_chart(fig)
-st.markdown("""---""")
+st.header("6월의 공포-탐욕 지수 변화")
+
+fig = px.line(tp_df, x='days', y='score')
+if open != None:
+    fig.add_annotation(x=day, y=open, 
+                    showarrow=True, arrowcolor="red", arrowsize=2, arrowhead=3, ay=-50,
+                    text='', font=dict(color="black", size=20))
+    st.plotly_chart(fig)
+else:
+    st.plotly_chart(fig)
+
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown('- 2022년 6월 한 달간  일어난 지수 변화를 나타낸 그래프입니다.')
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
+
+
+
+
+
+st.markdown("""
+<style>
+.emp {
+    font-size: 23px
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+
+# 통합
 
 # 비정형 vs. 비정형
 st.header("비정형 데이터 vs. 정형 데이터")
@@ -109,7 +145,7 @@ st.markdown("""---""")
 fig_col1, fig_col2 = st.columns(2)
 with fig_col1:
     date = df_text['날짜'].values
-    score = df_text['score'].values
+    score = df2['fg_score'].values
     fig = go.Figure(go.Scatter(x=date, y=score))
     fig.update_layout(title={'font': {'size': 25}, 'x': 0.5, 'text': '비정형 데이터'})
     st.plotly_chart(fig)

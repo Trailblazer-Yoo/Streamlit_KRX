@@ -136,6 +136,7 @@ else:
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown('- 2022년 6월 한 달간  일어난 지수 변화를 나타낸 그래프입니다.')
+st.markdown('- 참고 > smoothing 된 그래프 입니다.')
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
@@ -233,6 +234,6 @@ hide_st_style = """
     """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-footer = "<p style='text-align: center'>jykl = ['전준호', '유선종', '김나연', '이승환'] <br> Developed with 💙 by jykl</p>"
+footer = "<p style='text-align: center'>jykl = ['jjh', 'ysj', 'kny', 'lsh'] <br> Developed with 💙 by jykl</p>"
 st.markdown("---")
 st.markdown(footer, unsafe_allow_html=True)

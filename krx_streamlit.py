@@ -14,6 +14,15 @@ df_text = pd.read_csv('2022-06_score.csv')
 df_number = pd.read_csv('data_20200601_20220630.csv')
 
 df2 = pd.read_csv('final.csv')
+
+emo2 = df2[df2['fg_score'] >= 20]
+emo2 = emo2[emo2['fg_score'] < 40]
+emo2_len = len(emo2)
+
+emo3 = df2[df2['fg_score'] >= 40]
+emo3 = emo3[emo3['fg_score'] < 60]
+emo3_len = len(emo3)
+
 x = np.linspace(0., 30., 30)
 y = np.array(df2['fg_score'])
 sp = csaps.csaps(x, y, smooth=0.8)
@@ -24,18 +33,9 @@ tp_df = pd.DataFrame()
 tp_df['days'] = xs
 tp_df['score'] = ys
 
-#today = "2022년 6월 30일"
-score = 17
-if score >= 0 and score < 20:
-    emoji = '😱'
-elif score >= 20 and score < 40:
-    emoji = '😨'
-elif score >= 40 and score < 60:
-    emoji = '😶'
-elif score >= 60 and score < 80:
-    emoji = '😋'
-elif score >= 80 and score <= 100:
-    emoji = '🤑'
+# today = "2022년 6월 30일"
+# score = 17
+
 st.title("jykl: 개인 투자자의 KTOP30 투자 심리지수✨")
 st.markdown("""```
     이번 프로젝트를 통해서 투자자의 시장인식이 금융시장에 미치는 영향을 알아보고자 하였습니다.
@@ -79,6 +79,18 @@ try:
     score = open
     today = day
 
+    if score >= 0 and score < 20:
+        emoji = '😱'
+    elif score >= 20 and score < 40:
+        emoji = '😨'
+    elif score >= 40 and score < 60:
+        emoji = '😶'
+    elif score >= 60 and score < 80:
+        emoji = '😋'
+    elif score >= 80 and score <= 100:
+        emoji = '🤑'
+
+
     score = df2[df2['날짜'] == day]
     score = int(score['fg_score'].values)
     #st.markdown("""---""")
@@ -101,8 +113,13 @@ try:
 except:
     st.write(f"No data on `{day}`")
     open = None
+
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
+st.markdown(f'이번달 😨 감정은 {emo2_len}회 발생했습니다.')
+st.markdown(f'이번달 😶 감정은 {emo3_len}회 발생했습니다.')
+st.markdown(f'이번달 😨 감정은 현재 연속{len(emo2.iloc[4:,:])}일 발생했습니다.')
+
 st.markdown('* __현재 서비스는 2022년 6월에 한정되어 있습니다!__')
 
 st.markdown("""---""")

@@ -112,7 +112,7 @@ fig = px.line(tp_df, x='days', y='score')
 if open != None:
     fig.add_annotation(x=day, y=open, 
                     showarrow=True, arrowcolor="red", arrowsize=2, arrowhead=3, ay=-50,
-                    text='', font=dict(color="black", size=20))
+                    text='', font=dict(color="black", size=40))
     st.plotly_chart(fig)
 else:
     st.plotly_chart(fig)

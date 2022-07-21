@@ -187,7 +187,7 @@ with explanation:
     st.markdown('- KTOP30 거래회전율 = <span class=emp>`30개 종목의 총 거래량의 자연로그 값 / 30개 종목의 총 상장 주식 수 평균의 자연로그 값`</span>', unsafe_allow_html=True)
     st.markdown('- 또한, 값의 크기가 매우 크기 때문에 로그스케일링을 취해주었습니다.')
     st.markdown('- **0.5 이상일 경우 탐욕(greed), 0.5 이하일 경우 공포(fear)** 로 설정하였습니다.')
-st.markdown("""---""")
+st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
 st.header("정형 데이터: 환율")
@@ -202,7 +202,6 @@ with explanation:
     st.markdown('- 대외 충격에 민감한 우리나라의 특성을 반영해주기 위해 원/달러 환율 데이터를 지수 계산에 포함하였습니다.')
     st.markdown('- 환율 데이터는 과거의 경험을 바탕으로 max값을 1500, min값을 900으로 min-max-scaling 해주었으며, 자본이 이탈하는 상황이 주식 시장에 있어서는 부정적인 상황이기 때문에 환율이 상승하는 상황을 공포(fear)로 나타내주기 위해 <span class=emp>`1 - (min-max-scaling한 환율 값)`</span>을 하여 위아래가 뒤집힌 환율 데이터를 지수에 반영하였습니다.', unsafe_allow_html=True)
     st.markdown('- **0.5보다 클 경우 탐욕(greed), 0.5보다 낮을 경우 공포(fear)** 를 나타냅니다.')
-st.markdown("""---""")
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)

@@ -133,11 +133,20 @@ st.markdown('* __현재 서비스는 2022년 6월에 한정되어 있습니다!_
 
 st.markdown("""---""")
 st.header("6월의 공포-탐욕 지수 변화")
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 fig_tp1 = px.line(tp_df, x='days', y='score')
 fig_tp2 = px.scatter(real_tp_df,x='days',y='score')
 fig = go.Figure(data=fig_tp1.data+fig_tp2.data)
 fig.update_layout(yaxis=dict(range=[20,80]))
+fig.update_layout(title={'font': {'size': 25}, 'x': 0.5, 'text': '공포-탐욕지수'})
+
+fig.update_layout(title={'font': {'size': 25}, 'x': 0.5, 'text': '공포-탐욕지수'},
+    xaxis_title="Score",
+    yaxis_title="Days",
+    )
+
 
 if open != None:
     fig.add_annotation(x=day, y=open, 
@@ -172,8 +181,8 @@ st.markdown("""
 # 통합
 
 # 비정형 vs. 비정형
-st.header("비정형 데이터 vs. 정형 데이터")
 st.markdown("""---""")
+st.header("비정형 데이터 vs. 정형 데이터")
 fig_col1, fig_col2 = st.columns(2)
 with fig_col1:
     date = df_text['날짜'].values
@@ -190,7 +199,6 @@ with fig_col2:
     fig.add_trace(go.Scatter(x=date, y=exchange, name="환율"))
     fig.update_layout(title={'font': {'size': 25}, 'x': 0.5, 'text': '정형 데이터'})
     st.plotly_chart(fig)
-st.markdown("""---""")
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown('공포-탐욕 지수를 계산하기 위해 다음과 같은 데이터를 사용하였습니다.')
 st.markdown('1. **네이버 종목토론방 게시물, 유튜브 댓글**')
@@ -206,8 +214,8 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
 # 정형
-st.header("정형 데이터: 거래 회전율")
 st.markdown("""---""")
+st.header("정형 데이터: 거래 회전율")
 fig_col, explanation = st.columns(2)
 with fig_col:
     fig = px.line(df_number, x="날짜", y="거래회전율")
@@ -222,8 +230,8 @@ with explanation:
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
-st.header("정형 데이터: 환율")
 st.markdown("""---""")
+st.header("정형 데이터: 환율")
 fig_col, explanation = st.columns(2)
 with fig_col:
     fig = px.line(df_number, x="날짜", y="환율")

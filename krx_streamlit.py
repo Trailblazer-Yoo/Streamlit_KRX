@@ -6,6 +6,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import csaps
 import numpy as np
+from scipy import interpolate
+
+
 
 st.set_page_config(page_title='jykl: 공포-탐욕 지수', layout="wide")
 
@@ -23,11 +26,17 @@ emo3 = df2[df2['fg_score'] >= 40]
 emo3 = emo3[emo3['fg_score'] < 60]
 emo3_len = len(emo3)
 
-x = np.linspace(0., 30., 30)
+x = np.linspace(1., 30., 30)
 y = np.array(df2['fg_score'])
-sp = csaps.csaps(x, y, smooth=0.8)
-xs = np.linspace(x[0], x[-1], 120)
+sp = interpolate.interp1d(x,y,kind='cubic')
+
+# sp = csaps.csaps(x, y, smooth=0.8)
+xs = np.linspace(x[0], x[-1], 117)
 ys = sp(xs)
+
+real_tp_df = pd.DataFrame()
+real_tp_df['days'] = x
+real_tp_df['score'] = y
 
 tp_df = pd.DataFrame()
 tp_df['days'] = xs
@@ -125,10 +134,14 @@ st.markdown('* __현재 서비스는 2022년 6월에 한정되어 있습니다!_
 st.markdown("""---""")
 st.header("6월의 공포-탐욕 지수 변화")
 
-fig = px.line(tp_df, x='days', y='score')
+fig_tp1 = px.line(tp_df, x='days', y='score')
+fig_tp2 = px.scatter(real_tp_df,x='days',y='score')
+fig = go.Figure(data=fig_tp1.data+fig_tp2.data)
+fig.update_layout(yaxis=dict(range=[20,80]))
+
 if open != None:
     fig.add_annotation(x=day, y=open, 
-                    showarrow=True, arrowcolor="red", arrowsize=2, arrowhead=3, ay=-50,
+                    arrowcolor="red", arrowsize=2, arrowhead=3, ay=-50,
                     text='', font=dict(color="black", size=40))
     st.plotly_chart(fig)
 else:
@@ -137,6 +150,7 @@ else:
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown('- 2022년 6월 한 달간  일어난 지수 변화를 나타낸 그래프입니다.')
 st.markdown('- 참고 > smoothing 된 그래프 입니다.')
+st.markdown('- 댓글점수 데이터 50%, 거래회전율 25%, 환율 25%가 사용되어 산출된 공포-탐욕지수 그래프입니다.')
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)

@@ -42,6 +42,8 @@ tp_df = pd.DataFrame()
 tp_df['days'] = xs
 tp_df['score'] = ys
 
+ktop30_data = pd.read_csv('pr.csv')
+
 # today = "2022년 6월 30일"
 # score = 17
 
@@ -55,8 +57,10 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("CNN 머니에서 제공하는 <span class=emp>`Fear & Greed Index`</span>를 참고하여 국내 주식시장에 특화된 공포-탐욕 지수를 개발하였습니다.", unsafe_allow_html=True)
 st.markdown("""공포-탐욕 지수는 **투자자들의 감정을 공포와 탐욕의 정도**로 수치화한 것으로, 
                 **0**에 가까울수록 시장은 극단적 공포심에 지배되고, **100**에 가까울수록 극단적 탐욕에 지배되는 것을 의미합니다.""")
-st.markdown("- **공포**: 다수의 투자자가 두려움을 느껴 주식을 팔아치우는 상황을 의미합니다.")
-st.markdown("- **탐욕**: 다수의 투자자가 이욕을 느껴 주식을 사모으는 상황을 의미합니다.")
+st.markdown("""- **공포**: 다수의 투자자가 두려움을 느껴 주식을 팔아치우는 상황을 의미합니다.
+                """)
+st.markdown("""- **탐욕**: 다수의 투자자가 이욕을 느껴 주식을 사모으는 상황을 의미합니다.
+                """)
 st.markdown("""공포-탐욕 지수는 시장의 분위기를 가늠하는 데 사용될 수 있습니다. 
                 개인투자자의 결정에 영향을 미칠 수 있는 감정과 편견을 확인하고 
                 이들을 분석함으로써 시장 심리를 평가하는 유용한 방법으로 활용될 수 있습니다.""")
@@ -81,8 +85,10 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 
 # st.header(f"{today}의 공포-탐욕 지수")
-day = st.date_input("날짜 조회", datetime.date(2022, 6, 30))
-day = day.strftime("%Y-%m-%d")
+col01, col02 = st.columns([1,2])
+with col01:
+    day = st.date_input("날짜 조회", datetime.date(2022, 6, 30))
+    day = day.strftime("%Y-%m-%d")
 try:
     open = df2[df2['날짜']==day]['fg_score'].values[0]
     score = open
@@ -136,30 +142,47 @@ st.header("6월의 공포-탐욕 지수 변화")
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
-fig_tp1 = px.line(tp_df, x='days', y='score')
-fig_tp2 = px.scatter(real_tp_df,x='days',y='score')
-fig = go.Figure(data=fig_tp1.data+fig_tp2.data)
-fig.update_layout(yaxis=dict(range=[20,80]))
-fig.update_layout(title={'font': {'size': 25}, 'x': 0.5, 'text': '공포-탐욕지수'})
 
-fig.update_layout(title={'font': {'size': 25}, 'x': 0.5, 'text': '공포-탐욕지수'},
-    xaxis_title="Score",
-    yaxis_title="Days",
-    )
+col01, col02 = st.columns([1,1])
+with col01:
+    fig_tp1 = px.line(tp_df, x='days', y='score')
+    fig_tp2 = px.scatter(real_tp_df,x='days',y='score')
+    fig = go.Figure(data=fig_tp1.data+fig_tp2.data)
+    fig.update_layout(yaxis=dict(range=[20,80]))
+    fig.update_layout(title={'font': {'size': 25}, 'x': 0.5, 'text': '공포-탐욕지수'})
+
+    fig.update_layout(title={'font': {'size': 25}, 'x': 0.5, 'text': '공포-탐욕지수'},
+        xaxis_title="Score",
+        yaxis_title="Days",
+        )
 
 
-if open != None:
-    fig.add_annotation(x=day, y=open, 
-                    arrowcolor="red", arrowsize=2, arrowhead=3, ay=-50,
-                    text='', font=dict(color="black", size=40))
-    st.plotly_chart(fig)
-else:
-    st.plotly_chart(fig)
+    if open != None:
+        fig.add_annotation(x=day, y=open, 
+                        arrowcolor="red", arrowsize=2, arrowhead=3, ay=-50,
+                        text='', font=dict(color="black", size=40))
+        st.plotly_chart(fig)
+    else:
+        st.plotly_chart(fig)
+        
+with col02:
+    fig_tp1 = px.line(ktop30_data, x='날짜', y='종가')
+    # fig.update_layout(yaxis=dict(range=[20,80]))
+    # fig.update_layout(title={'font': {'size': 25}, 'x': 0.5, 'text': 'KTOP30 종가'})
+
+    fig_tp1.update_layout(title={'font': {'size': 25}, 'x': 0.5, 'text': 'KTOP30 종가'},
+        xaxis_title="Close",
+        yaxis_title="Days",
+        )
+    st.plotly_chart(fig_tp1)
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown('- 2022년 6월 한 달간  일어난 지수 변화를 나타낸 그래프입니다.')
 st.markdown('- 참고 > smoothing 된 그래프 입니다.')
 st.markdown('- 댓글점수 데이터 50%, 거래회전율 25%, 환율 25%가 사용되어 산출된 공포-탐욕지수 그래프입니다.')
+st.markdown('- 6월의 감정지수는 전체적으로 공포이며, KTOP30 종가는 하락하는 경향을 보입니다.')
+
+
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)

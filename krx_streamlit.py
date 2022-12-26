@@ -12,11 +12,11 @@ from scipy import interpolate
 
 st.set_page_config(page_title='jykl: 공포-탐욕 지수', layout="wide")
 
-df = pd.read_csv('VIX.csv')
-df_text = pd.read_csv('2022-06_score.csv')
-df_number = pd.read_csv('data_20200601_20220630.csv')
+df = pd.read_csv('data/VIX.csv')
+df_text = pd.read_csv('data/2022-06_score.csv')
+df_number = pd.read_csv('data/data_20200601_20220630.csv')
 
-df2 = pd.read_csv('final.csv')
+df2 = pd.read_csv('data/final.csv')
 
 emo2 = df2[df2['fg_score'] >= 20]
 emo2 = emo2[emo2['fg_score'] < 40]
@@ -42,7 +42,7 @@ tp_df = pd.DataFrame()
 tp_df['days'] = xs
 tp_df['score'] = ys
 
-ktop30_data = pd.read_csv('pr.csv')
+ktop30_data = pd.read_csv('data/pr.csv')
 
 # today = "2022년 6월 30일"
 # score = 17
